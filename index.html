@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A little something for Om 🎂</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --cream: #FFF8EC;
+      --card: #FFFDF8;
+      --pink: #FF4F81;
+      --yellow: #FFC93C;
+      --teal: #2EC4B6;
+      --orange: #FF8A3D;
+      --plum: #2B1B3D;
+      --plum-soft: rgba(43, 27, 61, 0.55);
+      --line: rgba(43, 27, 61, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255, 201, 60, 0.25) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(46, 196, 182, 0.2) 0%, transparent 45%),
+        var(--cream);
+      font-family: 'Poppins', sans-serif;
+      color: var(--plum);
+      overflow: hidden;
+    }
+
+    /* ---------- confetti backdrop (decorative, static-ish) ---------- */
+    #confetti-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bit {
+      position: absolute;
+      opacity: 0.55;
+      animation: drift 6s ease-in-out infinite;
+    }
+
+    @keyframes drift {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-14px) rotate(20deg);
+      }
+    }
+
+    /* ---------- screens ---------- */
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      padding: 20px 16px;
+      text-align: center;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.98);
+    }
+
+    /* ---------- SCREEN 1 : balloon ---------- */
+    .eyebrow {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: rise 1s ease forwards 0.2s;
+    }
+
+    .balloon-wrap {
+      position: relative;
+      width: 150px;
+      height: 190px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      animation: rise 1s ease forwards 0.4s, float 3.4s ease-in-out infinite 1.4s;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    #balloon-btn {
+      width: 150px;
+      height: 150px;
+      border-radius: 50% 50% 50% 50% / 55% 55% 45% 45%;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      background: radial-gradient(circle at 32% 28%, #ffffff 0%, #ff8fae 16%, var(--pink) 62%, #d63768 100%);
+      box-shadow:
+        0 20px 40px -14px rgba(255, 79, 129, 0.55),
+        inset -10px -14px 22px rgba(0, 0, 0, 0.12);
+      transition: transform 0.25s ease;
+    }
+
+    #balloon-btn:hover {
+      transform: scale(1.04) rotate(-2deg);
+    }
+
+    #balloon-btn:active {
+      transform: scale(0.97);
+    }
+
+    #balloon-btn:focus-visible {
+      outline: 3px solid var(--teal);
+      outline-offset: 5px;
+    }
+
+    #balloon-btn::after {
+      /* knot */
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 10px solid #d63768;
+    }
+
+    .string {
+      width: 2px;
+      height: 34px;
+      background: repeating-linear-gradient(180deg, var(--plum-soft) 0, var(--plum-soft) 3px, transparent 3px, transparent 6px);
+      margin-top: 2px;
+    }
+
+    /* pop flash ring */
+    .flash {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 201, 60, 0.5) 40%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .flash.go {
+      animation: flashOut 0.5s ease-out forwards;
+    }
+
+    @keyframes flashOut {
+      0% {
+        transform: translate(-50%, -50%) scale(0.2);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(2.6);
+        opacity: 0;
+      }
+    }
+
+    #balloon-btn.pop {
+      animation: popAnim 0.45s cubic-bezier(0.3, 0, 0.6, 1) forwards;
+    }
+
+    @keyframes popAnim {
+      0% {
+        transform: scale(1);
+      }
+
+      30% {
+        transform: scale(1.18, 0.85);
+      }
+
+      55% {
+        transform: scale(0.85, 1.15);
+      }
+
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    .hint {
+      margin-top: 26px;
+      font-size: 13.5px;
+      color: var(--plum-soft);
+      letter-spacing: 0.3px;
+      opacity: 0;
+      animation: rise 1s ease forwards 0.7s;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ---------- reveal text after click ---------- */
+    .reveal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+      opacity: 0;
+      pointer-events: none;
+      width: min(500px, 94vw);
+      padding: 0 16px;
+    }
+
+    .reveal.show {
+      animation: bloom 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      pointer-events: auto;
+    }
+
+    @keyframes bloom {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.6) rotate(-4deg);
+      }
+
+      60% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.08) rotate(1deg);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      }
+    }
+
+    .reveal h1 {
+      font-family: 'Baloo 2', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.3rem, 10vw, 4.2rem);
+      line-height: 1.05;
+    }
+
+    .reveal h1 .w1 {
+      color: var(--pink);
+    }
+
+    .reveal h1 .w2 {
+      color: var(--teal);
+    }
+
+    .reveal h1 .w3 {
+      color: var(--orange);
+    }
+
+    .reveal p.sub {
+      margin-top: 16px;
+      font-size: clamp(13px, 3.5vw, 15px);
+      color: var(--plum-soft);
+      line-height: 1.5;
+    }
+
+    .next-btn {
+      margin-top: 34px;
+      background: var(--plum);
+      border: none;
+      color: var(--cream);
+      font-family: 'Baloo 2', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.3px;
+      padding: 13px 28px;
+      border-radius: 999px;
+      cursor: pointer;
+      opacity: 0;
+      box-shadow: 0 10px 24px -10px rgba(43, 27, 61, 0.5);
+      transition: opacity 0.6s ease 0.4s, transform 0.2s ease, background 0.2s ease;
+    }
+
+    .next-btn.show {
+      opacity: 1;
+    }
+
+    .next-btn:hover {
+      background: var(--pink);
+      transform: translateY(-2px);
+    }
+
+    /* ---------- SCREEN 2 : card ---------- */
+    .card-stage {
+      width: min(430px, 92vw);
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      background: var(--card);
+      border-radius: 20px;
+      padding: clamp(26px, 6vw, 42px) clamp(20px, 5vw, 34px);
+      box-shadow: 0 30px 60px -20px rgba(43, 27, 61, 0.28);
+      transform: translateY(24px) scale(0.94);
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background: linear-gradient(90deg, var(--pink), var(--yellow), var(--teal), var(--orange));
+    }
+
+    .card.open {
+      animation: openCard 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes openCard {
+      0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.94);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .cake {
+      width: 64px;
+      height: 46px;
+      margin: 6px auto 18px;
+      position: relative;
+    }
+
+    .cake .layer {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 64px;
+      height: 30px;
+      background: linear-gradient(180deg, #ffe1ea, #ffc4d6);
+      border-radius: 6px;
+      box-shadow: inset 0 -6px 0 rgba(255, 79, 129, 0.35);
+    }
+
+    .cake .candle {
+      position: absolute;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 16px;
+      background: var(--teal);
+      border-radius: 2px;
+    }
+
+    .cake .flame {
+      position: absolute;
+      left: 50%;
+      bottom: 46px;
+      transform: translateX(-50%);
+      width: 7px;
+      height: 10px;
+      background: radial-gradient(circle at 50% 30%, #fff3c4, var(--orange) 70%);
+      border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+      animation: flicker 2s ease-in-out infinite;
+    }
+
+    @keyframes flicker {
+
+      0%,
+      100% {
+        transform: translateX(-50%) scaleY(1);
+      }
+
+      50% {
+        transform: translateX(-50%) scaleY(0.88) rotate(3deg);
+      }
+    }
+
+    .card h2 {
+      font-family: 'Baloo 2', sans-serif;
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: var(--pink);
+      margin-bottom: 16px;
+    }
+
+    .card p {
+      font-size: clamp(13px, 3.8vw, 14.5px);
+      line-height: 1.75;
+      color: var(--plum);
+      opacity: 0.85;
+      text-align: left;
+    }
+
+    .card .signoff {
+      margin-top: 22px;
+      font-family: 'Baloo 2', sans-serif;
+      font-weight: 600;
+      color: var(--teal);
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .replay-btn {
+      margin-top: 26px;
+      background: none;
+      border: none;
+      color: var(--plum-soft);
+      font-size: 13px;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.6s, color 0.2s ease;
+    }
+
+    .replay-btn.show {
+      opacity: 1;
+    }
+
+    .replay-btn:hover {
+      color: var(--pink);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .eyebrow {
+        font-size: 11px;
+        margin-bottom: 22px;
+      }
+
+      .balloon-wrap {
+        width: 120px;
+        height: 160px;
+      }
+
+      #balloon-btn {
+        width: 120px;
+        height: 120px;
+      }
+
+      #balloon-btn::after {
+        bottom: -7px;
+      }
+
+      .flash {
+        width: 120px;
+        height: 120px;
+      }
+
+      .hint {
+        font-size: 12px;
+        margin-top: 20px;
+      }
+
+      .next-btn {
+        font-size: 14px;
+        padding: 11px 24px;
+        margin-top: 28px;
+      }
+
+      .card h2 {
+        font-size: 1.35rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="confetti-bg"></div>
+
+  <!-- SCREEN 1 -->
+  <section class="screen" id="screen-1">
+    <p class="eyebrow">a little surprise for you</p>
+
+    <div class="balloon-wrap">
+      <button id="balloon-btn" aria-label="Pop the balloon">
+        <div class="flash" id="flash"></div>
+      </button>
+      <div class="string"></div>
+
+      <div class="reveal" id="reveal">
+        <h1><span class="w1">Happy</span> <span class="w2">Birthday</span> <span class="w3">Om</span></h1>
+        <p class="sub">one more year, one more reason to celebrate you 🎉</p>
+      </div>
+    </div>
+
+    <p class="hint" id="hint">tap the balloon to pop it</p>
+    <button class="next-btn" id="next-btn">Open Card →</button>
+  </section>
+
+  <!-- SCREEN 2 -->
+  <section class="screen hidden" id="screen-2">
+    <div class="card-stage">
+      <div class="card" id="card">
+        <div class="cake">
+          <div class="layer"></div>
+          <div class="candle"></div>
+          <div class="flame"></div>
+        </div>
+        <h2>For Om</h2>
+        <p>
+          Hey Om — hope this made you smile before anything else did today.
+          Here's to another year of your ideas, your ambition, and all the
+          things you're still figuring out. Watching you build, chase, and
+          grow has honestly been fun to see. May this year hand you
+          everything you've been working towards, and a few things you
+          didn't even know to ask for.
+        </p>
+        <p class="signoff">— with all the good wishes, always</p>
+      </div>
+    </div>
+    <button class="replay-btn" id="replay-btn">↺ pop another balloon</button>
+  </section>
+
+  <script>
+    // ---------- decorative confetti backdrop ----------
+    const bgContainer = document.getElementById('confetti-bg');
+    const palette = ['#FF4F81', '#FFC93C', '#2EC4B6', '#FF8A3D'];
+    const shapes = ['circle', 'square', 'triangle'];
+    const BIT_COUNT = 26;
+    for (let i = 0; i < BIT_COUNT; i++) {
+      const b = document.createElement('div');
+      b.className = 'bit';
+      const shape = shapes[Math.floor(Math.random() * shapes.length)];
+      const color = palette[Math.floor(Math.random() * palette.length)];
+      const size = Math.random() * 10 + 7;
+      b.style.left = Math.random() * 100 + '%';
+      b.style.top = Math.random() * 100 + '%';
+      b.style.animationDelay = (Math.random() * 5) + 's';
+      b.style.animationDuration = (5 + Math.random() * 3) + 's';
+
+      if (shape === 'circle') {
+        b.style.width = size + 'px';
+        b.style.height = size + 'px';
+        b.style.background = color;
+        b.style.borderRadius = '50%';
+      } else if (shape === 'square') {
+        b.style.width = size + 'px';
+        b.style.height = size + 'px';
+        b.style.background = color;
+        b.style.borderRadius = '2px';
+        b.style.transform = 'rotate(' + (Math.random() * 40 - 20) + 'deg)';
+      } else {
+        b.style.width = '0';
+        b.style.height = '0';
+        b.style.borderLeft = (size / 2) + 'px solid transparent';
+        b.style.borderRight = (size / 2) + 'px solid transparent';
+        b.style.borderBottom = size + 'px solid ' + color;
+      }
+      bgContainer.appendChild(b);
+    }
+
+    // ---------- screen 1 logic ----------
+    const balloonBtn = document.getElementById('balloon-btn');
+    const flash = document.getElementById('flash');
+    const hint = document.getElementById('hint');
+    const reveal = document.getElementById('reveal');
+    const nextBtn = document.getElementById('next-btn');
+    const eyebrow = document.querySelector('.eyebrow');
+    let popped = false;
+
+    balloonBtn.addEventListener('click', () => {
+      if (popped) return;
+      popped = true;
+
+      balloonBtn.classList.add('pop');
+      flash.classList.add('go');
+      hint.style.transition = 'opacity 0.3s ease';
+      hint.style.opacity = '0';
+      eyebrow.style.transition = 'opacity 0.3s ease';
+      eyebrow.style.opacity = '0';
+      setTimeout(() => {
+        hint.style.display = 'none';
+        eyebrow.style.display = 'none';
+      }, 300);
+
+      setTimeout(() => {
+        balloonBtn.style.visibility = 'hidden';
+        document.querySelector('.string').style.visibility = 'hidden';
+
+        reveal.classList.add('show');
+        fireConfetti();
+
+        setTimeout(() => {
+          nextBtn.classList.add('show');
+        }, 700);
+      }, 320);
+    });
+
+    function fireConfetti() {
+      const colors = ['#FF4F81', '#FFC93C', '#2EC4B6', '#FF8A3D'];
+      const duration = 1600;
+      const end = Date.now() + duration;
+
+      confetti({
+        particleCount: 130,
+        spread: 100,
+        startVelocity: 45,
+        origin: { y: 0.55 },
+        colors: colors,
+        scalar: 1.1
+      });
+
+      (function frame() {
+        confetti({
+          particleCount: 4,
+          angle: 60,
+          spread: 60,
+          origin: { x: 0, y: 0.6 },
+          colors: colors
+        });
+        confetti({
+          particleCount: 4,
+          angle: 120,
+          spread: 60,
+          origin: { x: 1, y: 0.6 },
+          colors: colors
+        });
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+
+    // ---------- transition to screen 2 ----------
+    const screen1 = document.getElementById('screen-1');
+    const screen2 = document.getElementById('screen-2');
+    const card = document.getElementById('card');
+    const replayBtn = document.getElementById('replay-btn');
+
+
+    nextBtn.addEventListener('click', () => {
+      screen1.classList.add('hidden');
+      screen2.classList.remove('hidden');
+      eyebrow.style.display = 'none';
+      hint.style.display = 'none';
+      setTimeout(() => {
+        card.classList.add('open');
+        setTimeout(() => replayBtn.classList.add('show'), 500);
+      }, 150);
+    });
+
+    replayBtn.addEventListener('click', () => {
+      // reset screen 1 state
+      popped = false;
+      balloonBtn.classList.remove('pop');
+      balloonBtn.style.visibility = 'visible';
+      document.querySelector('.string').style.visibility = 'visible';
+      flash.classList.remove('go');
+      reveal.classList.remove('show');
+      nextBtn.classList.remove('show');
+      hint.style.opacity = '1';
+      hint.style.display = '';
+      eyebrow.style.opacity = '1';
+      eyebrow.style.display = '';
+      card.classList.remove('open');
+      replayBtn.classList.remove('show');
+
+      screen2.classList.add('hidden');
+      screen1.classList.remove('hidden');
+    });
+  </script>
+
+</body>
+
+</html>
